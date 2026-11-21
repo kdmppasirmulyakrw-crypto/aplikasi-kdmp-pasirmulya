@@ -80,3 +80,14 @@ RLS juga membatasi akses langsung ke tabel melalui API. Pengaturan menu aplikasi
 - Data kas dan anggota pada prototipe ini masih tersimpan lokal per akun/perangkat. Modul-modul lain juga belum seluruhnya dihubungkan ke tabel Supabase.
 - Jika login ditolak karena profil tidak ditemukan, periksa bahwa `profiles.id` sama persis dengan UID pada Authentication → Users.
 - Jangan memasukkan password atau service-role key ke GitHub. Buat password sementara dan sampaikan kepada petugas melalui jalur aman.
+
+
+## Modul Pembukuan Kas — terhubung ke Supabase
+
+- Modul Pembukuan Kas membaca data dari `public.cash_transactions` dengan filter `source_module = 'kas'`.
+- Transaksi baru disimpan langsung ke Supabase dengan tanggal, arah kas masuk/keluar, kategori, nominal, keterangan, nomor bukti unik, UID petugas, dan idempotency UUID.
+- Riwayat memuat maksimal 500 transaksi terbaru. Dashboard menghitung saldo dari data kas yang berhasil dimuat.
+- Sesuai RLS pada skema, hanya role `admin` dan `bendahara` yang dapat membaca dan menulis tabel kas.
+- Modul ini membutuhkan skema Supabase terbaru yang memiliki tabel `cash_transactions`, kolom `source_module`, `client_mutation_id`, dan policy `cash_read` / `cash_write`.
+- Modul LPG dan Usaha Mandiri belum ikut diintegrasikan oleh perubahan ini. Data anggota juga masih lokal.
+- Pengujian koneksi dan insert harus dilakukan pada proyek Supabase milik koperasi menggunakan akun Admin atau Bendahara.
