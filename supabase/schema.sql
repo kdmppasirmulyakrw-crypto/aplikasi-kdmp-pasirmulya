@@ -35,12 +35,12 @@ language sql
 stable
 security definer
 set search_path = public
-as $
+as $$
   select p.role
   from public.profiles p
   where p.id = auth.uid() and p.active = true
   limit 1;
-$;
+$$;
 
 create or replace function public.has_role(allowed_roles text[])
 returns boolean
@@ -48,9 +48,9 @@ language sql
 stable
 security definer
 set search_path = public
-as $
+as $$
   select coalesce(public.current_app_role() = any(allowed_roles), false);
-$;
+$$;
 
 -- ---------- Members and savings ----------
 create table if not exists public.members (
