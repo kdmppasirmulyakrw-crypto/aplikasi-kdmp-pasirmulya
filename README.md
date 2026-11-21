@@ -22,3 +22,49 @@ Gunakan server web statis (misalnya VS Code Live Server atau hosting HTTPS). Ser
 **Peringatan:** Ini prototipe awal, bukan sistem produksi. Data transaksi yang dimasukkan sekarang hanya tersimpan pada browser/perangkat masing-masing dan belum tersinkron ke database pusat. Jangan gunakan untuk pembukuan resmi atau menyimpan data sensitif. Skema SQL masih draft dan perlu kebijakan RLS/permission yang diuji sebelum digunakan.
 
 SISKOP PINBUK: https://siskop-beta.pinbuk.id/
+
+
+## Memasang database Supabase dan hak akses
+
+1. Masuk ke dashboard proyek Supabase: https://supabase.com/dashboard/project/fngumlzcvlbpozcfxfxx
+2. Buka **SQL Editor** → **New query**.
+3. Buka file [supabase/schema.sql](./supabase/schema.sql), salin seluruh isinya, tempel ke SQL Editor, lalu tekan **Run**.
+4. Pastikan query selesai tanpa error. Script membuat tabel, indeks, trigger audit, dan kebijakan RLS untuk lima peran.
+5. Buka **Authentication → Users** dan buat akun untuk setiap petugas. Pendaftaran publik sebaiknya tetap nonaktif.
+6. Untuk setiap akun yang dibuat, catat UUID pengguna dari Authentication → Users. Jalankan perintah berikut di SQL Editor dengan UUID dan nama yang sesuai:
+
+```sql
+insert into public.profiles (id, full_name, role, active)
+values
+  ('UUID-AKUN-ADMIN', 'Administrator KDMP', 'admin', true),
+  ('UUID-AKUN-BENDAHARA', 'Nama Bendahara', 'bendahara', true),
+  ('UUID-AKUN-SEKRETARIS', 'Nama Sekretaris', 'sekretaris', true),
+  ('UUID-AKUN-ANGGOTA', 'Petugas Bidang Anggota', 'bidang_anggota', true),
+  ('UUID-AKUN-USAHA', 'Petugas Bidang Usaha', 'bidang_usaha', true);
+```
+
+Ganti setiap UUID dan nama dengan data akun yang benar. Jika hanya ada sebagian akun, masukkan baris yang memang sudah dibuat. Jangan gunakan contoh UUID di atas secara literal.
+
+### Matriks hak akses
+
+| Modul/data | Admin | Bendahara | Sekretaris | Bidang Anggota | Bidang Usaha |
+|---|---|---|---|---|---|
+| Profil pengguna | Kelola | Profil sendiri | Profil sendiri | Profil sendiri | Profil sendiri |
+| Anggota | Kelola | Baca | — | Kelola | Baca |
+| Simpanan anggota | Kelola | Kelola | — | Kelola | — |
+| Kas | Kelola | Kelola | — | — | — |
+| Produk, stok, penjualan | Kelola | Baca | — | — | Kelola |
+| Invoice | Kelola | Baca | — | — | Kelola |
+| Pengurus/karyawan | Kelola | — | Kelola | — | — |
+| SHU | Kelola | Kelola | — | — | — |
+| Surat dan surat jalan | Kelola | — | Kelola | — | Baca/kelola surat jalan |
+| Audit log | Baca | Baca | — | — | — |
+
+RLS juga membatasi akses langsung ke tabel melalui API. Pengaturan menu aplikasi saja tidak cukup untuk keamanan.
+
+### Catatan penting
+
+- Nilai awal referensi SHU yang disimpan: Jasa Pengurus 30%, Dana Cadangan 20%, Dana Pendidikan & Dana Sosial 5%. Nilai ini hanya referensi awal dan dapat diubah sesuai RAT; sisa 45% sengaja tidak dialokasikan otomatis.
+- Pembagian SHU anggota disimpan secara manual; skema tidak menghitung atau membayarkan SHU otomatis.
+- Jangan menaruh `service_role` key, secret key, atau password database di aplikasi browser atau GitHub.
+- Skema SQL sudah disiapkan di repositori, tetapi belum dieksekusi pada proyek Supabase dari koneksi ini. Setelah menjalankan SQL, lakukan pengujian akun masing-masing peran sebelum memasukkan data operasional.
