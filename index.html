@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#123b32"><meta name="description" content="Aplikasi Terpadu Koperasi Desa Merah Putih Pasirmulya">
+  <link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./styles.css">
+  <title>KDMP Pasirmulya</title>
+</head>
+<body>
+  <header class="topbar"><div class="brand"><div class="brand-mark">K</div><div><strong>KDMP PASIRMULYA</strong><small>Sistem Informasi Koperasi</small></div></div><div class="top-actions"><span id="connection" class="status">Memeriksa koneksi…</span><button id="installBtn" class="btn btn-light" hidden>Pasang Aplikasi</button><button id="logoutBtn" class="btn btn-light">Keluar</button></div></header>
+  <div class="layout"><aside class="sidebar"><div class="profile"><div class="avatar">A</div><div><strong id="userName">Administrator</strong><small id="userRole">Admin</small></div></div><nav id="nav">
+    <button class="nav-item active" data-page="dashboard">▦ <span>Dashboard</span></button>
+    <div class="nav-label">KEUANGAN</div><button class="nav-item" data-page="kas">▤ <span>Pembukuan Kas</span></button><button class="nav-item" data-page="laporan">▥ <span>Laporan Keuangan</span></button>
+    <div class="nav-label">UNIT USAHA</div><button class="nav-item" data-page="lpg">▣ <span>Penjualan LPG 3 Kg</span></button><button class="nav-item" data-page="usaha">▧ <span>Usaha Mandiri</span></button><button class="nav-item" data-page="invoice">▱ <span>Invoice</span></button>
+    <div class="nav-label">KEANGGOTAAN & ORGANISASI</div><button class="nav-item" data-page="anggota">♙ <span>Data Anggota</span></button><button class="nav-item" data-page="pengurus">♧ <span>Pengurus & Karyawan</span></button><button class="nav-item" data-page="shu">◈ <span>SHU</span></button>
+    <div class="nav-label">ADMINISTRASI</div><button class="nav-item" data-page="surat">▧ <span>Surat & Surat Jalan</span></button><button class="nav-item" data-page="siskop">↗ <span>Integrasi SISKOP</span></button>
+  </nav><div class="sidebar-foot">KDMP Pasirmulya · PWA</div></aside>
+  <main class="main"><div class="page-heading"><div><p class="eyebrow">KOPERASI DESA MERAH PUTIH</p><h1 id="pageTitle">Dashboard</h1><p id="pageSubtitle">Ringkasan aktivitas koperasi</p></div><div class="date-chip" id="today"></div></div><section id="pageContent" aria-live="polite"></section><footer>© <span id="year"></span> KDMP Pasirmulya · Data tersimpan lokal saat offline</footer></main></div>
+  <script src="./app.js" defer></script>
+</body></html>
