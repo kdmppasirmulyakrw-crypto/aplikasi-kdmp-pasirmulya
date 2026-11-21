@@ -68,3 +68,13 @@ RLS juga membatasi akses langsung ke tabel melalui API. Pengaturan menu aplikasi
 - Pembagian SHU anggota disimpan secara manual; skema tidak menghitung atau membayarkan SHU otomatis.
 - Jangan menaruh `service_role` key, secret key, atau password database di aplikasi browser atau GitHub.
 - Skema SQL sudah disiapkan di repositori, tetapi belum dieksekusi pada proyek Supabase dari koneksi ini. Setelah menjalankan SQL, lakukan pengujian akun masing-masing peran sebelum memasukkan data operasional.
+
+
+## Login aplikasi (rilis awal)
+
+- Aplikasi memakai Supabase Auth email/password melalui publishable key di browser.
+- Profil petugas dibaca dari `public.profiles` berdasarkan UID sesi; profil harus ada, aktif, dan memiliki salah satu role yang dikenal.
+- Menu aplikasi difilter berdasarkan role. Keamanan data tetap ditentukan oleh RLS di database, bukan oleh penyembunyian menu.
+- Data kas dan anggota pada prototipe ini masih tersimpan lokal per akun/perangkat. Modul-modul lain juga belum seluruhnya dihubungkan ke tabel Supabase.
+- Jika login ditolak karena profil tidak ditemukan, periksa bahwa `profiles.id` sama persis dengan UID pada Authentication → Users.
+- Jangan memasukkan password atau service-role key ke GitHub. Buat password sementara dan sampaikan kepada petugas melalui jalur aman.
