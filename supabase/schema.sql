@@ -8,29 +8,6 @@
 create extension if not exists pgcrypto;
 
 -- ---------- Helpers ----------
-create or replace function public.current_app_role()
-returns text
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select p.role
-  from public.profiles p
-  where p.id = auth.uid() and p.active = true
-  limit 1;
-$$;
-
-create or replace function public.has_role(allowed_roles text[])
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select coalesce(public.current_app_role() = any(allowed_roles), false);
-$$;
-
 create or replace function public.set_updated_at()
 returns trigger language plpgsql
 set search_path = public
@@ -50,6 +27,30 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Helper fungsi role dibuat SETELAH tabel profiles tersedia.
+create or replace function public.current_app_role()
+returns text
+language sql
+stable
+security definer
+set search_path = public
+as $
+  select p.role
+  from public.profiles p
+  where p.id = auth.uid() and p.active = true
+  limit 1;
+$;
+
+create or replace function public.has_role(allowed_roles text[])
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $
+  select coalesce(public.current_app_role() = any(allowed_roles), false);
+$;
 
 -- ---------- Members and savings ----------
 create table if not exists public.members (
