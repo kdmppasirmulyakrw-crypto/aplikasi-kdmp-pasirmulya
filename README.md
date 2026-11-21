@@ -33,17 +33,19 @@ SISKOP PINBUK: https://siskop-beta.pinbuk.id/
 5. Buka **Authentication → Users** dan buat akun untuk setiap petugas. Pendaftaran publik sebaiknya tetap nonaktif.
 6. Untuk setiap akun yang dibuat, catat UUID pengguna dari Authentication → Users. Jalankan perintah berikut di SQL Editor dengan UUID dan nama yang sesuai:
 
+Gunakan UID yang disalin dari **Authentication → Users**. Jangan jalankan contoh UUID. Untuk menghindari error duplikasi primary key, gunakan pola berikut dan ganti setiap nilai contoh dengan UID asli:
+
 ```sql
-insert into public.profiles (id, full_name, role, active)
-values
-  ('UUID-AKUN-ADMIN', 'Administrator KDMP', 'admin', true),
-  ('UUID-AKUN-BENDAHARA', 'Nama Bendahara', 'bendahara', true),
-  ('UUID-AKUN-SEKRETARIS', 'Nama Sekretaris', 'sekretaris', true),
-  ('UUID-AKUN-ANGGOTA', 'Petugas Bidang Anggota', 'bidang_anggota', true),
-  ('UUID-AKUN-USAHA', 'Petugas Bidang Usaha', 'bidang_usaha', true);
+INSERT INTO public.profiles (id, full_name, role, active)
+VALUES
+  ('UID-ASLI-ADMIN', 'Admin', 'admin', true)
+ON CONFLICT (id) DO UPDATE SET
+  full_name = EXCLUDED.full_name,
+  role = EXCLUDED.role,
+  active = EXCLUDED.active;
 ```
 
-Ganti setiap UUID dan nama dengan data akun yang benar. Jika hanya ada sebagian akun, masukkan baris yang memang sudah dibuat. Jangan gunakan contoh UUID di atas secara literal.
+Ulangi untuk setiap petugas. Pastikan UID adalah UUID akun Auth yang bersangkutan.
 
 ### Matriks hak akses
 
